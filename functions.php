@@ -1,6 +1,6 @@
 <?php
 // UPDATED 1/10/2019 create a shortcode to produce a login form and control login and logout pages with error handling
-function devpress_login_form_shortcode() {
+function my_login_form_shortcode() {
         if ( is_user_logged_in() )
                 return '';
               // return  wp_login_form();
@@ -25,9 +25,9 @@ function devpress_login_form_shortcode() {
     <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri(); ?>/login-style.css" type="text/css" media="all">
     <div id="loginform">
 			<form method="post" action="<?php bloginfo('url') ?>/wp-login.php" class="wp-user-form">
-				<h2>Login with your SJFC Network ID to access this form</h2>
+				<h2>Login to access this form</h2>
 				<div>
-					<input type="text" placeholder="SJFC Network ID  (e.g. abc12345)" required="" id="user_login" name="log" />
+					<input type="text" placeholder="UserID" required="" id="user_login" name="log" />
 				</div>
 				<div>
 					<input type="password" placeholder="Password" required="" id="user_pass" name="pwd" />
@@ -46,13 +46,15 @@ function devpress_login_form_shortcode() {
             return $form;
             }
 
-function devpress_add_shortcodes() {
-        add_shortcode( 'devpress-login-form', 'devpress_login_form_shortcode' );
+//use shortcode [my-login-form] to show the login on any page or post
+function my_add_shortcodes() {
+        add_shortcode( 'my-login-form', 'my_login_form_shortcode' );
 }
-add_action( 'init', 'devpress_add_shortcodes' );
+add_action( 'init', 'my_add_shortcodes' );
 
 add_action( 'wp_login_failed', 'my_front_end_login_fail' );  // hook failed login
 
+//control login failures
 function my_front_end_login_fail( $username ) {
    $referrer = $_SERVER['HTTP_REFERER'];  // where did the post submission come from?
    // if there's a valid referrer, and it's not the default log-in screen
@@ -62,9 +64,10 @@ function my_front_end_login_fail( $username ) {
    }
 }
 
-function sjfc_logout_redirect() {
+//control where logout goes
+function my_logout_redirect() {
 $logouturl = esc_attr($_SERVER['HTTP_REFERER']);
     wp_redirect($logouturl);
     die;
 }
-add_action('wp_logout', 'sjfc_logout_redirect', PHP_INT_MAX);
+add_action('wp_logout', 'my_logout_redirect', PHP_INT_MAX);
